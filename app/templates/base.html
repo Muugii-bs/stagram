@@ -1,0 +1,35 @@
+<html>
+	<head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+		<link href="static/css/bootstrap.css" rel="stylesheet">
+		<link href="static/css/bootstrap.min.css" rel="stylesheet">
+		{% if title %}
+		<title>{{ title }}</title>
+		{% else %}
+		<title>Mugistagram</title>
+		{% endif %}
+		{% block extra_css %}{% endblock extra_css %}
+		<script src="static/js/jquery.js"></script>
+		{% block extra_js %}{% endblock extra_js %}
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+			<div class="container topnav">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand topnav" href="/index">Mugistagram</a>
+				</div>
+				{% block navbar %}{% endblock %}
+			</div>
+		</nav>
+		{% block content %}{% endblock %}
+	</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+	<link rel="stylesheet" href="static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="static/css/font-awesome.min.css">
+	<link rel="stylesheet" href="static/css/form-elements.css">
+	<link rel="stylesheet" href="static/css/style.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- Top content -->
+        <div class="top-content">
+        	
+            <div class="inner-bg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 form-box">
+                            <div class="form-bottom">
+			                    <form action="/login" role="form" method="post" name="login" class="login-form">
+									{{ form.hidden_tag() }}
+			                    	<div class="form-group">
+										<p>{{ form.name(placeholder='ログインID', size=50) }}</p>
+			                        </div>
+									<div class="form-group">
+										<p>{{ form.password(placeholder='パスワード', size=50) }}</p>
+			                        </div>
+			                        <button type="submit" class="btn">ログイン</button>
+			                    </form>
+		                    </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3 social-login">
+                        	<h3>他のアカウントでログイン：</h3>
+                        	<div class="social-login-buttons">
+	                        	<a class="btn btn-link-1 btn-link-1-facebook" href="#">
+	                        		<i class="fa fa-facebook"></i> Facebook
+	                        	</a>
+	                        	<a class="btn btn-link-1 btn-link-1-twitter" href="#">
+	                        		<i class="fa fa-twitter"></i> Twitter
+	                        	</a>
+	                        	<a class="btn btn-link-1 btn-link-1-google-plus" href="#">
+	                        		<i class="fa fa-google-plus"></i> Google Plus
+	                        	</a>
+                        	</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>	
+{% endblock %}
