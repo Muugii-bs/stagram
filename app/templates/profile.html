@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="static/js/profile.js"></script>
+<script src="static/js/react-bootstrap.js"></script>
+<script src="static/js/react-bootstrap.min.js"></script>
+<script src="static/js/profile.js" type="text/jsx"></script>
 {% endblock %}
 
 {% block navbar %}
@@ -28,7 +30,7 @@
         <div class="useravatar">
 			<img alt="" src={{ avatar }}>
         </div>
-		<div class="card-info"> <span class="card-title">{{ name }}</span>
+		<div class="card-info"> <span class="card-title">{{ name }}</span> &nbsp;&nbsp;<span id="edit-btn"></span>
         </div>
     </div>
     <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
