@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db, login_manager
-from .login import LoginForm
+from .forms import LoginForm, SignupForm
 import flask.ext.login as flask_login
 from .models import User
 from .upload import Uploader
@@ -32,6 +32,18 @@ def login():
 			flash('Login ID or password is incorrect.', 'danger')
 
 	return render_template('login.html', title='Login', form=form)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	if flask_login.current_user.is_authenticated:
+		return redirect(url_for('index'))
+	form = SignupForm()
+	if form.validate_on_submit():
+		print form.name.data, form.mail.data, form.password.data
+	else:
+		flash('Login ID or password is incorrect.', 'danger')
+
+	return render_template('signup.html', title='Signup', form=form)
 
 @app.route('/logout')
 def logout():

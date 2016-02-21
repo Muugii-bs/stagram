@@ -156,6 +156,10 @@ img { max-width: 100%; }
 	width: 100%;
 }
 
+.form-bottom form input#mail {
+	width: 100%;
+}
+
 .form-bottom form .input-error {
 	border-color: #4aaf51;
 }

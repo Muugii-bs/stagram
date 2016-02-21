@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="static/css/style.css">
 {% endblock %}
 {% block extra_js %}
-	<script src="static/js/login.js" type="text/jsx"></script>
+	<script src="static/js/signup.js" type="text/jsx"></script>
 {% endblock %}
 
 {% block content %}
@@ -19,15 +19,18 @@
         <div class="row">
             <div class="col-sm-6 col-sm-offset-3 form-box">
                 <div class="form-bottom">
-			        <form action="/login" role="form" method="post" name="login" class="login-form">
+			        <form action="/signup" role="form" method="post" name="login" class="login-form">
 						{{ form.hidden_tag() }}
 			            <div class="form-group">
 							<p>{{ form.name(placeholder='login ID', size=50) }}</p>
 			            </div>
+			            <div class="form-group">
+							<p>{{ form.mail(placeholder='e-mail address', size=50) }}</p>
+			            </div>
 						<div class="form-group">
 							<p>{{ form.password(placeholder='password', size=50) }}</p>
 			            </div>
-			            <button type="submit" class="btn">Login</button>
+			            <button type="submit" class="btn">Signup</button>
 			        </form>
 		        </div>
             </div>

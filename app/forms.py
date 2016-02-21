@@ -7,4 +7,8 @@ class LoginForm(Form):
 	password = PasswordField(u'password', validators=[DataRequired()])
 	submit = SubmitField(u'login')
 
-
+class SignupForm(Form):
+	name = TextField(u'username', validators=[DataRequired()])
+	mail = TextField(u'mail', validators=[DataRequired()])
+	password = PasswordField(u'password', validators=[DataRequired()])
+	submit = SubmitField(u'signup')

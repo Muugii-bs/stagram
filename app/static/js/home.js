@@ -13,7 +13,7 @@ var landingPart = React.createClass({
                   <hr className="intro-divider" />
                   <ul className="list-inline intro-social-buttons">
                     <li>
-                      <a href="/login" className="btn btn-success btn-lg">新規登録</a>
+                      <a href="/signup" className="btn btn-success btn-lg">Sign up</a>
                     </li>
                   </ul>
                 </div>
