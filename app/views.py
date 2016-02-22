@@ -1,9 +1,10 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, jsonify
 from app import app, db, login_manager
 from .forms import LoginForm, SignupForm
 import flask.ext.login as flask_login
 from .models import User
 from .upload import Uploader
+from .db_utils import *
 
 @login_manager.unauthorized_handler
 def unauthorized():
@@ -39,7 +40,11 @@ def signup():
 		return redirect(url_for('index'))
 	form = SignupForm()
 	if form.validate_on_submit():
-		print form.name.data, form.mail.data, form.password.data
+		if not user_exist(form.name.data, form.mail.data):
+			regist_user(_db=db, _name=form.name.data, _password=form.password.data, _email=form.mail.data)
+			return redirect(url_for('login'))
+		else:
+			flash('Signup error', 'danger')
 	else:
 		flash('Login ID or password is incorrect.', 'danger')
 
@@ -61,13 +66,12 @@ def upload():
 			print 'ok'
 		else:
 			print 'upload error'
+		return redirect(url_for('index'))
 
-	return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form action="/avatar" method=post enctype=multipart/form-data>
-      <p><input type=file name=avatar>
-         <input type=submit value=Upload>
-    </form>
-    ''' 
+@app.route('/photos', methods=['POST'])
+def get_photos():
+	if request.method == 'POST':
+		user = request.form['user']
+		return jsonify(photos=user)	
+	else:
+		print 'error'

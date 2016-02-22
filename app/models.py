@@ -6,6 +6,8 @@ from werkzeug import check_password_hash, generate_password_hash
 OFFLINE = 0
 ONLINE = 1
 LENGTH = 120
+ACTIVE = 1
+INACTIVE = 0
 
 class User(db.Model):
 	__tablename__ = 'user'
@@ -13,20 +15,17 @@ class User(db.Model):
 	name = db.Column(db.String(LENGTH), index=True, unique=True)
 	email = db.Column(db.String(LENGTH), index=True, unique=True)
 	status = db.Column(db.SmallInteger, default=OFFLINE)
-	profile_pic = db.Column(db.String(LENGTH), index=True, unique=True)
+	activation = db.Column(db.SmallInteger, default=INACTIVE)
+	profile_pic = db.Column(db.String(LENGTH))
 	_password = db.Column('password', db.String(LENGTH), nullable=False)
-	
-	@property
-	def is_authenticated(self):
-		return True
-			
+
 	@property
 	def is_active(self):
 		return True
-	
+
 	@property
-	def is_anonymous(self):
-		return False
+	def is_authenticated(self):
+		return True
 	
 	def get_id(self):
 		try:

@@ -1,69 +1,48 @@
-/*
 $(document).ready(function() {
-$(".btn-pref .btn").click(function () {
-    $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
-    $(".tab").addClass("active"); // instead of this do the below 
-    $(this).removeClass("btn-default").addClass("btn-primary");   
-});
-});
+	$('#prof_pic').click(function () {
+		$('#myModal').modal('show'); 
+	});
 
-*/
-var ButtonToolbar = ReactBootstrap.ButtonToolbar;
-var Modal = ReactBootstrap.Modal;
-var Button = ReactBootstrap.Button;
-var buttonsInstance = (
-    <ButtonToolbar>
-      <Button>Default</Button>
-    </ButtonToolbar>
-  );
+	$('#my-photo').click(function () {
+		$('#favorites').removeClass("btn-primary").addClass("btn-default");
+		$('#friends').removeClass("btn-primary").addClass("btn-default");
+		user = $('#user-name').text();
+		display_photos($(this), user);
+	});
 
-const uploadModal = React.createClass({
-	getInitialStatus() {
-		return {show: false};
-	},
+	$('#favorites').click(function () {
+		$(this).removeClass("btn-default").addClass("btn-primary");
+		$('#my-photo').removeClass("btn-primary").addClass("btn-default");
+		$('#friends').removeClass("btn-primary").addClass("btn-default");
+	});
 
-	render() {
-		"use strict";
-		let close = () => this.setState({show: false});	
-		
-		return (
-			<div className="modal-container" style={{height: 200}}>
-				<Button 
-					bsSize="small"
-					onClick={() => this.setState({show: true})}>
-				edit
-				</Button>
+	$('#friends').click(function () {
+		$(this).removeClass("btn-default").addClass("btn-primary");
+		$('#favorites').removeClass("btn-primary").addClass("btn-default");
+		$('#my-photo').removeClass("btn-primary").addClass("btn-default");
+	});
 
-				<Modal 
-					show={this.state.show}
-					onHide={close}
-					container={this}
-					aria-labelledby="contained-modal-title">
-				
-					<Modal.Header closeButton>
-						<Modal.Title id="contained-modal-title">写真アップロード</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<form action="/avatar" method="post" enctype="multipart/form-data">
-							<input type="file" name="avatar"/>
-							<input type="submit" value="アップロード"/>
-						</form>
-					</Modal.Body>
-					<Modal.Footer>
-						<Button 
-							onClick={close}>閉じる
-						</Button>
-					</Modal.Footer>
-				</Modal>
-			</div>
-		);
+	function display_photos(button, user) {
+		$.ajax({
+			url: '/photos',
+			type: 'post',
+			data: {user: user},
+			dataType: 'json'
+		}).done(function(data){
+			console.log(data);
+		}).fail(function(){
+			alert('AJAX error');
+		});
+		$('.container').remove();
+		var container = '<div class="container">'
+					  + '<div class="row">'
+					  + '<div class="col-lg-12">'
+					  + '<h1 class="page-header">Photo'
+					  + '<small>&nbsp;&nbsp;gallery</small>'
+					  + '</h1></div></div></div>'
+		if(!button.hasClass("btn-primary")) {
+			$('#content').append(container);
+			button.removeClass("btn-default").addClass("btn-primary");
+		}
 	}
 });
-
-React.render(
-	React.createElement(uploadModal, null),
-	document.getElementById('edit-btn')
-);
-
-
-			
