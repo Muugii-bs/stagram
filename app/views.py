@@ -17,7 +17,7 @@ def index():
 		return render_template('home.html')
 	return render_template('profile.html', 
 							name=flask_login.current_user.name,
-							avatar=flask_login.current_user.profile_pic)
+							avatar=flask_login.current_user.get_avatar())
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -39,15 +39,16 @@ def signup():
 	if flask_login.current_user.is_authenticated:
 		return redirect(url_for('index'))
 	form = SignupForm()
-	if form.validate_on_submit():
+	if form.validate_on_submit() and request.method == 'POST':
 		if not user_exist(form.name.data, form.mail.data):
-			regist_user(_db=db, _name=form.name.data, _password=form.password.data, _email=form.mail.data)
+			regist_user(_name=form.name.data, _password=form.password.data, _email=form.mail.data)
 			return redirect(url_for('login'))
 		else:
-			flash('Signup error', 'danger')
-	else:
-		flash('Login ID or password is incorrect.', 'danger')
-
+			flash('User already exists!', 'danger')
+	elif request.method == 'GET':
+		return render_template('signup.html', title='Signup', form=form)
+	else:	
+		flash('Invalid error!', 'danger')
 	return render_template('signup.html', title='Signup', form=form)
 
 @app.route('/logout')
@@ -61,10 +62,12 @@ def upload(type):
 		return render_template('home.html')
 	if request.method == 'POST':
 		file = request.files['avatar']
+		name = request.form['file-name']
+		desc = request.form['file-desc']
 		if type == 'avatar':
-			uploader = Uploader(flask_login.current_user, _file=file, _type = 'avatar')
+			uploader = Uploader(flask_login.current_user, _file=file, _type = 'avatar', _name=name, _desc=desc)
 		elif type == 'photo':
-			uploader = Uploader(flask_login.current_user, _file=file, _type='photo')
+			uploader = Uploader(flask_login.current_user, _file=file, _type='photo', _name=name, _desc=desc)
 		else:
 			flash('Upload error', 'danger')
 		if uploader.upload():
@@ -82,3 +85,14 @@ def photos():
 		return jsonify(photos)	
 	else:
 		return jsonify({'photos': [], 'error': 'Wrong request!'})
+
+@app.route('/delete', methods=['POST'])
+def delete():
+	if not flask_login.current_user.is_authenticated:
+		return jsonify({'photos': [], 'error': 'Access error!'}) 
+	if request.method == 'POST':
+		photo_id = request.form['id']
+		delete_photo(photo_id)
+		return jsonify({'photos': [], 'error': ''})
+
+	

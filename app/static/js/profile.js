@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	user = $('#user-name').text();
+	var user = $('#user-name').text();
 	display_photos(user);
 	$('#prof_pic').click(function () {
 		$('#avatarModal').modal('show'); 
@@ -7,6 +7,21 @@ $(document).ready(function() {
 
 	$(document).on('click', '#upload_link', function () {
 		$('#photoModal').modal('show');
+	});
+
+	$(document).on('click', '#btn-upload-photo', function () {
+		display_photos(user);
+		$('#photo-gallery').removeClass("hidden");
+	});
+
+	$(document).on('click', '.btn-delete', function () {
+		var id = $(this).attr('id');
+		$('#deleteModal').modal('show');
+		$(document).on('click', '#delete-ok-btn', function () {
+			delete_photo(id);
+			$('#deleteModal').modal('hide');
+			location.reload();
+		});
 	});
 
 	$('#my-photo').click(function () {
@@ -29,6 +44,19 @@ $(document).ready(function() {
 		$('#my-photo').removeClass("btn-primary").addClass("btn-default");
 		$('#photo-gallery').addClass("hidden");
 	});
+
+	function delete_photo(id) {
+		$.ajax({
+			url: '/delete',
+			type: 'post',
+			data: {id: id},
+			dataType: 'json'
+		}).done(function(data) {
+			console.log(data, 'ok');
+		}).fail(function(){
+			alert('Delete error');
+		});
+	}
 
 	function display_photos(user) {
 		$('.photos').remove();
@@ -54,9 +82,11 @@ $(document).ready(function() {
 					cnt ++;
 					var block = '<div class="col-md-4 portfolio-item">'
 						    	+ '<a href="#"><img class="img-responsive" src="'
-								+ photos[i]
-								+ '" alt=""></a><h3><a href="#">Project Name</a></h3>'
-								+ '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.</p> </div>'
+								+ photos[i].path
+								+ '" alt=""></a><h3>'
+								+ photos[i].name + '<a href="#" class="btn glyphicon glyphicon-trash btn-delete" id="'
+								+ photos[i].id + '"></a></h3>'
+								+ '<p>' + photos[i].desc + '</p></div>'
 					row += block;
 					if(cnt == 3 || i == photos.length - 1) {
 						container = container + row + '</div>'

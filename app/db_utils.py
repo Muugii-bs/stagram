@@ -8,10 +8,11 @@ from sqlalchemy.schema import (
     DropConstraint,
     )
 from app import app
-from app.models import User
+from app.models import User, Photo
 from datetime import timedelta
 from random import randint
 from config import DEFAULT_AVATAR, UPLOAD_FOLDER, USER_DIR_PREFIX
+from pprint import pprint
 import math
 import os
 
@@ -58,14 +59,15 @@ def db_clean():
 
 
 def db_create_default(db):
-	user = User(name='user1', email='user1@gmail.com', password='password1', status=0, profile_pic=DEFAULT_AVATAR, activation=0)
-	db.session.add(user)
-	db.session.commit()
+	avatar = Photo(user_id=0, path=DEFAULT_AVATAR, desc='Default avatar', name='default', del_flag=0, avatar_flag=1)
+	avatar.save()
+	#user = User(name='user1', email='user1@gmail.com', password='password1', status=0, profile_pic=DEFAULT_AVATAR, activation=0)
+	#user.save()
 
-def regist_user(_db, _name, _email, _password):
-	user = User(name=_name, email=_email, password=_password, status=0, profile_pic=DEFAULT_AVATAR, activation=0)
-	_db.session.add(user)
-	_db.session.commit()
+def regist_user(_name, _email, _password):
+	avatar = Photo.query.filter_by(path=DEFAULT_AVATAR).first()
+	user = User(name=_name, email=_email, password=_password, status=0, avatar_id=avatar.id, activation=0)
+	user.save()
 	user = User.query.filter_by(name=_name, email=_email).first()
 	print UPLOAD_FOLDER + str(user.id)
 	if not os.path.exists(UPLOAD_FOLDER + str(user.id)):
@@ -80,18 +82,21 @@ def user_exist(_name, _email):
 		return True
 
 def get_photos(_id):
-	user_dir = UPLOAD_FOLDER + str(_id) 
-	send_dir = USER_DIR_PREFIX + str(_id) + '/'
 	res = {
 		'photos': [],
 		'error': ''
 	}
-	if os.path.exists(user_dir):
-		for subdir, dirs, files in os.walk(user_dir):
-			for file in files:
-				if file.startswith('photo_' + str(_id)):
-					res['photos'].append(send_dir + file)
-	else:
-		res['error'] = 'User directory not found!'
+	photos = Photo.query.filter_by(user_id=_id, del_flag=0, avatar_flag=0).all()
+	for photo in photos:
+		tmp = {
+			'id': photo.id,
+			'path': photo.path,
+			'name': photo.name,
+			'desc': photo.desc
+		}
+		res['photos'].append(tmp)
 	return res
 
+def delete_photo(id):
+	photo = Photo.query.get(id)
+	photo.remove()

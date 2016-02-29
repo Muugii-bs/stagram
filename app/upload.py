@@ -1,16 +1,20 @@
 import string
 import random
 import time
-from app import app, db
 import os
-from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, USER_DIR_PREFIX
+from .models import Photo
+from app import app, db
+from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, USER_DIR_PREFIX, DEFAULT_AVATAR
 
 class Uploader():
-	def __init__(self, user, _file, _type):
+	def __init__(self, user, _file, _type, _name, _desc):
 		self.user = user
 		self.file = _file 
 		self.dir = str(user.id) + '/'
 		self.type = _type
+		self.name = _name
+		self.desc = _desc
+		print self.desc, self.name
 
 	def allowed_file(self, filename):
 		return '.' in filename and \
@@ -19,9 +23,17 @@ class Uploader():
 	def upload(self):
 		if self.file and self.allowed_file(self.file.filename):
 			filename = self.create_name(self.file.filename)
-			self.file.save(os.path.join(UPLOAD_FOLDER + self.dir, filename))
+			self.file.save(os.path.join(UPLOAD_FOLDER + self.dir, filename)) 
 			if self.type == 'avatar':
-				self.user.profile_pic = USER_DIR_PREFIX + self.dir + filename
+				old = Photo.query.get(self.user.avatar_id)
+				if not old.path == DEFAULT_AVATAR:
+					old.del_flag = 1
+				photo = Photo(user_id=self.user.id, path=USER_DIR_PREFIX + self.dir + filename, name=self.name, desc=self.desc, del_flag=0, avatar_flag=1)  
+				photo.save()
+				self.user.avatar_id = photo.id
+			elif self.type == 'photo':
+				photo = Photo(user_id=self.user.id, path=USER_DIR_PREFIX + self.dir + filename, name=self.name, desc=self.desc, del_flag=0, avatar_flag=0)  
+				photo.save()
 			db.session.commit()
 			return True
 		return False

@@ -12,12 +12,12 @@ login_manager.init_app(app)
 
 from app import views, models
 from app.models import User
-import utils
+import db_utils
 
 def init_db():
-	utils.db_clean()
+	db_utils.db_clean()
 	db.create_all(app=app)
-	#utils.db_create_default(db)
+	db_utils.db_create_default(db)
 
 if __name__ == '__main__':
 	app.run()
