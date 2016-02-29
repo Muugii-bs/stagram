@@ -20,7 +20,8 @@ class Uploader():
 		if self.file and self.allowed_file(self.file.filename):
 			filename = self.create_name(self.file.filename)
 			self.file.save(os.path.join(UPLOAD_FOLDER + self.dir, filename))
-			self.user.profile_pic = USER_DIR_PREFIX + self.dir + filename
+			if self.type == 'avatar':
+				self.user.profile_pic = USER_DIR_PREFIX + self.dir + filename
 			db.session.commit()
 			return True
 		return False

@@ -64,7 +64,7 @@ def upload(type):
 		if type == 'avatar':
 			uploader = Uploader(flask_login.current_user, _file=file, _type = 'avatar')
 		elif type == 'photo':
-			uploader = uploader(flask_login.current_user, _file=file, _type='photo')
+			uploader = Uploader(flask_login.current_user, _file=file, _type='photo')
 		else:
 			flash('Upload error', 'danger')
 		if uploader.upload():
