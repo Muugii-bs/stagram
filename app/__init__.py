@@ -17,7 +17,7 @@ import utils
 def init_db():
 	utils.db_clean()
 	db.create_all(app=app)
-	utils.db_create_default(db)
+	#utils.db_create_default(db)
 
 if __name__ == '__main__':
 	app.run()

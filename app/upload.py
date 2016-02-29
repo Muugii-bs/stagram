@@ -3,15 +3,14 @@ import random
 import time
 from app import app, db
 import os
-
-app_dir = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = os.path.join(app_dir, 'static/uploads')
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, USER_DIR_PREFIX
 
 class Uploader():
-	def __init__(self, user, file):
+	def __init__(self, user, _file, _type):
 		self.user = user
-		self.file = file 
+		self.file = _file 
+		self.dir = str(user.id) + '/'
+		self.type = _type
 
 	def allowed_file(self, filename):
 		return '.' in filename and \
@@ -20,8 +19,8 @@ class Uploader():
 	def upload(self):
 		if self.file and self.allowed_file(self.file.filename):
 			filename = self.create_name(self.file.filename)
-			self.file.save(os.path.join(UPLOAD_FOLDER, filename))
-			self.user.profile_pic = 'static/uploads/' + filename
+			self.file.save(os.path.join(UPLOAD_FOLDER + self.dir, filename))
+			self.user.profile_pic = USER_DIR_PREFIX + self.dir + filename
 			db.session.commit()
 			return True
 		return False
@@ -29,5 +28,5 @@ class Uploader():
 	def create_name(self, filename):
 		file_ext = '.' + filename.rsplit('.', 1)[1]
 		rand_str = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-		return 'avatar_' + self.user.name + '_' + (time.strftime("%Y%m%d%H%M%S")) + '_' + rand_str + file_ext
+		return self.type + '_' + str(self.user.id) + '_' + (time.strftime("%Y%m%d%H%M%S")) + '_' + rand_str + file_ext
 

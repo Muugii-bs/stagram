@@ -55,13 +55,18 @@ def logout():
 	flask_login.logout_user()
 	return redirect(url_for('index'))
 
-@app.route('/avatar', methods=['GET', 'POST'])
-def upload():
+@app.route('/upload/<type>', methods=['GET', 'POST'])
+def upload(type):
 	if not flask_login.current_user.is_authenticated:
 		return render_template('home.html')
 	if request.method == 'POST':
-		avatar = request.files['avatar']
-		uploader = Uploader(flask_login.current_user, file=avatar)
+		file = request.files['avatar']
+		if type == 'avatar':
+			uploader = Uploader(flask_login.current_user, _file=file, _type = 'avatar')
+		elif type == 'photo':
+			uploader = uploader(flask_login.current_user, _file=file, _type='photo')
+		else:
+			flash('Upload error', 'danger')
 		if uploader.upload():
 			print 'ok'
 		else:
@@ -69,9 +74,11 @@ def upload():
 		return redirect(url_for('index'))
 
 @app.route('/photos', methods=['POST'])
-def get_photos():
-	if request.method == 'POST':
-		user = request.form['user']
-		return jsonify(photos=user)	
+def photos():
+	if not flask_login.current_user.is_authenticated:
+		return jsonify({'photos': [], 'error': 'Access error!'}) 
+	if request.method == 'POST' and flask_login.current_user.name == request.form['user']:
+		photos = get_photos(flask_login.current_user.id)	
+		return jsonify(photos)	
 	else:
-		print 'error'
+		return jsonify({'photos': [], 'error': 'Wrong request!'})

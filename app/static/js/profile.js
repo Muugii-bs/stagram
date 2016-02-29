@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$('#prof_pic').click(function () {
-		$('#myModal').modal('show'); 
+		$('#avatarModal').modal('show'); 
 	});
 
 	$('#my-photo').click(function () {
@@ -33,8 +33,8 @@ $(document).ready(function() {
 		}).fail(function(){
 			alert('AJAX error');
 		});
-		$('.container').remove();
-		var container = '<div class="container">'
+		$('.photos').remove();
+		var container = '<div class="photos">'
 					  + '<div class="row">'
 					  + '<div class="col-lg-12">'
 					  + '<h1 class="page-header">Photo'
